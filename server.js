@@ -73,33 +73,31 @@ app.get("/api/locations", async (req, res) => {
     await connectToDatabase();
     
     const { userId } = req.query;
-    
-    // Build query based on userId parameter
-    const query = userId ? { userId } : {};
-    
-    const batches = await LocationBatch.find(query).sort({ batchReceivedAt: -1 });
-    
-    // Flatten all locations from all batches
-    const allLocations = [];
-    batches.forEach(batch => {
-      batch.locations.forEach(location => {
-        allLocations.push({
-          lat: location.lat,
-          lng: location.lng,
-        });
-      });
-    });
 
-    res.json({ 
-      message: "Locations retrieved successfully", 
+    // If userId provided, filter by it; otherwise fetch all
+    const query = userId ? { userId } : {};
+
+    const batches = await LocationBatch.find(query).sort({ batchReceivedAt: -1 });
+
+    // Flatten locations: only include lat and lng
+    const allLocations = batches.flatMap(batch =>
+      batch.locations.map(loc => ({
+        lat: loc.lat,
+        lng: loc.lng
+      }))
+    );
+
+    res.json({
+      message: "Locations retrieved successfully",
       total: allLocations.length,
-      locations: allLocations 
+      locations: allLocations
     });
   } catch (error) {
     console.error("Error retrieving locations:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 // ✅ Health check route
 app.get("/", (req, res) => res.send("🚀 Location Tracker API running"));
