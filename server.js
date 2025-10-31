@@ -86,7 +86,6 @@ app.get("/api/locations", async (req, res) => {
         allLocations.push({
           lat: location.lat,
           lng: location.lng,
-          timestamp: location.timestamp,
         });
       });
     });
