@@ -29,6 +29,34 @@ Store a batch of location data.
 }
 ```
 
+### GET `/api/locations`
+Retrieve all location data.
+
+**Query Parameters:**
+- `userId` (optional): Filter locations by specific user ID
+
+**Response:**
+```json
+{
+  "message": "Locations retrieved successfully",
+  "total": "number",
+  "locations": [
+    {
+      "userId": "string",
+      "lat": "number",
+      "lng": "number",
+      "timestamp": "string",
+      "accuracy": "number",
+      "batchReceivedAt": "date"
+    }
+  ]
+}
+```
+
+**Examples:**
+- Get all locations: `GET /api/locations`
+- Get locations for specific user: `GET /api/locations?userId=user123`
+
 ### GET `/` or `/api`
 Health check endpoint.
 

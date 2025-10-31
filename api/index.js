@@ -64,6 +64,44 @@ app.post("/api/locations/batch", async (req, res) => {
   }
 });
 
+// ✅ Endpoint to get all location data
+app.get("/api/locations", async (req, res) => {
+  try {
+    await connectToDatabase();
+    
+    const { userId } = req.query;
+    
+    // Build query based on userId parameter
+    const query = userId ? { userId } : {};
+    
+    const batches = await LocationBatch.find(query).sort({ batchReceivedAt: -1 });
+    
+    // Flatten all locations from all batches
+    const allLocations = [];
+    batches.forEach(batch => {
+      batch.locations.forEach(location => {
+        allLocations.push({
+          userId: batch.userId,
+          lat: location.lat,
+          lng: location.lng,
+          timestamp: location.timestamp,
+          accuracy: location.accuracy,
+          batchReceivedAt: batch.batchReceivedAt
+        });
+      });
+    });
+
+    res.json({ 
+      message: "Locations retrieved successfully", 
+      total: allLocations.length,
+      locations: allLocations 
+    });
+  } catch (error) {
+    console.error("Error retrieving locations:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // ✅ Health check route
 app.get("/", (req, res) => res.send("🚀 Location Tracker API running"));
 app.get("/api", (req, res) => res.send("🚀 Location Tracker API running"));
