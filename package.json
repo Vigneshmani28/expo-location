@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Location Tracker API for Vercel deployment",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "vercel-build": "echo 'Building for Vercel'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["location", "tracker", "api"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.x"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.2"
+  }
+}
